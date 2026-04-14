@@ -13,9 +13,12 @@
   },
   "dependencies": {
     "next": "15.5.15",
+    "prop-types": "^15.8.1",
     "qrcode.react": "^4.2.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-simple-maps": "^3.0.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

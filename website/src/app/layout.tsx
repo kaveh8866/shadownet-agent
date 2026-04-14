@@ -61,6 +61,7 @@ export default function RootLayout({
               <Link href="/architecture" prefetch={false} className="hover:text-foreground transition-colors">Architecture</Link>
               <Link href="/docs" prefetch={false} className="hover:text-foreground transition-colors">Docs</Link>
               <Link href="/installation" prefetch={false} className="hover:text-foreground transition-colors">Installation</Link>
+              <Link href="/dashboard" prefetch={false} className="hover:text-foreground transition-colors">Dashboard</Link>
               <Link href="/download" prefetch={false} className="hover:text-foreground transition-colors">Download</Link>
               <Link href="/support" prefetch={false} className="hover:text-foreground transition-colors">Support</Link>
               <Link href="/roadmap" prefetch={false} className="hover:text-foreground transition-colors">Roadmap</Link>
