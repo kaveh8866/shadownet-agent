@@ -1,5 +1,14 @@
 export const dynamic = "force-static";
 
+import Link from "next/link";
+
+const repoOwner = "kaveh8866";
+const repoName = "shadownet-agent";
+const githubRepo = `https://github.com/${repoOwner}/${repoName}`;
+const githubDownloads = `${githubRepo}/tree/main/website/public/downloads/v0.1.0`;
+const githubDocsInstall = `${githubRepo}/blob/main/docs/install.md`;
+const githubRawDownloads = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/website/public/downloads/v0.1.0`;
+
 function Step({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-gray-800 bg-gray-900/40 p-6">
@@ -27,10 +36,20 @@ export default function InstallationPage() {
 
       <div className="mt-10 grid gap-6">
         <Step n="1" title="Download + verify">
-          Go to <span className="font-mono">/download</span> and download the artifact plus its <span className="font-mono">.sha256</span> file.
-          Always verify before running.
+          Go to{" "}
+          <Link href="/download" className="text-indigo-300 hover:text-indigo-200">
+            /download
+          </Link>{" "}
+          and download the artifact plus its <span className="font-mono">.sha256</span> file. Always verify before running. You can also
+          browse the exact files on GitHub:{" "}
+          <a className="text-indigo-300 hover:text-indigo-200" href={githubDownloads} target="_blank" rel="noreferrer">
+            downloads/v0.1.0
+          </a>
+          .
           <div className="mt-4 rounded-lg border border-gray-800 bg-gray-950 p-4">
-            <pre className="text-xs font-mono text-gray-300 whitespace-pre-wrap">{`sha256sum -c shadownet-inside-v0.1.0-linux-amd64.tar.gz.sha256`}</pre>
+            <pre className="text-xs font-mono text-gray-300 whitespace-pre-wrap">{`curl -LO ${githubRawDownloads}/shadownet-inside-v0.1.0-linux-amd64.tar.gz
+curl -LO ${githubRawDownloads}/shadownet-inside-v0.1.0-linux-amd64.tar.gz.sha256
+sha256sum -c shadownet-inside-v0.1.0-linux-amd64.tar.gz.sha256`}</pre>
           </div>
           <div className="mt-4 rounded-xl border border-gray-800 bg-gray-950 p-6 text-gray-500 text-sm">
             Screenshot placeholder: checksum verification on a terminal
@@ -43,6 +62,12 @@ export default function InstallationPage() {
             <pre className="text-xs font-mono text-gray-300 whitespace-pre-wrap">{`tar -xzf shadownet-inside-v0.1.0-linux-amd64.tar.gz
 sudo ./install-linux.sh inside
 sudo systemctl enable --now shadownet-inside.service`}</pre>
+          </div>
+          <div className="mt-3 text-sm text-gray-400">
+            Full install reference (GitHub source):{" "}
+            <a className="text-indigo-300 hover:text-indigo-200" href={githubDocsInstall} target="_blank" rel="noreferrer">
+              docs/install.md
+            </a>
           </div>
           <div className="mt-4 rounded-xl border border-gray-800 bg-gray-950 p-6 text-gray-500 text-sm">
             Screenshot placeholder: systemd service enabled and running

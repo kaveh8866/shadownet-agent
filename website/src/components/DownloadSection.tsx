@@ -25,6 +25,10 @@ type PlatformCard = {
 
 const version = "v0.1.0";
 const base = `/downloads/${version}`;
+const repoOwner = "kaveh8866";
+const repoName = "shadownet-agent";
+const githubBlobBase = `https://github.com/${repoOwner}/${repoName}/blob/main/website/public`;
+const githubRawBase = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/website/public`;
 
 function fileUrl(file: string) {
   return `${base}/${file}`;
@@ -32,6 +36,22 @@ function fileUrl(file: string) {
 
 function shaUrl(file: string) {
   return `${base}/${file}.sha256`;
+}
+
+function githubBlobUrl(publicPath: string) {
+  return `${githubBlobBase}${publicPath}`;
+}
+
+function githubRawUrl(publicPath: string) {
+  return `${githubRawBase}${publicPath}`;
+}
+
+function rawFileUrl(file: string) {
+  return githubRawUrl(fileUrl(file));
+}
+
+function rawShaUrl(file: string) {
+  return githubRawUrl(shaUrl(file));
 }
 
 function recommendedFor(os: DetectedOS, role: Role): DownloadItem {
@@ -42,9 +62,9 @@ function recommendedFor(os: DetectedOS, role: Role): DownloadItem {
       description: "Run ShadowNet-Inside as a CLI binary in Termux (development).",
       file: `shadownet-inside-${version}-android-arm64`,
       sha256Url: shaUrl(`shadownet-inside-${version}-android-arm64`),
-      installCommand: `pkg update -y && pkg install -y wget openssl-tool && wget -O shadownet-inside ${fileUrl(
+      installCommand: `pkg update -y && pkg install -y wget openssl-tool && wget -O shadownet-inside ${rawFileUrl(
         `shadownet-inside-${version}-android-arm64`,
-      )} && wget -O shadownet-inside.sha256 ${shaUrl(`shadownet-inside-${version}-android-arm64`)} && sha256sum -c shadownet-inside.sha256 && chmod +x shadownet-inside && ./shadownet-inside`,
+      )} && wget -O shadownet-inside.sha256 ${rawShaUrl(`shadownet-inside-${version}-android-arm64`)} && sha256sum -c shadownet-inside.sha256 && chmod +x shadownet-inside && ./shadownet-inside`,
       verifyCommand: `sha256sum -c shadownet-inside.sha256`,
       notes: [
         "No Play Store distribution. Sideloading/VPN wrapper is a separate Android project.",
@@ -61,7 +81,7 @@ function recommendedFor(os: DetectedOS, role: Role): DownloadItem {
       description: role === "inside" ? "Inside for restricted networks." : "Outside for supporters to curate and send bundles.",
       file,
       sha256Url: shaUrl(file),
-      installCommand: `curl -LO ${fileUrl(file)} && curl -LO ${shaUrl(file)} && certutil -hashfile ${file} SHA256`,
+      installCommand: `curl -LO ${rawFileUrl(file)} && curl -LO ${rawShaUrl(file)} && certutil -hashfile ${file} SHA256`,
       verifyCommand: `Compare with ${file}.sha256`,
       notes: ["Extract zip, run the binary. For Inside, provide SHADOWNET_MASTER_KEY env var."],
     };
@@ -75,7 +95,7 @@ function recommendedFor(os: DetectedOS, role: Role): DownloadItem {
       description: "Apple Silicon build.",
       file,
       sha256Url: shaUrl(file),
-      installCommand: `curl -LO ${fileUrl(file)} && curl -LO ${shaUrl(file)} && shasum -a 256 -c ${file}.sha256 && tar -xzf ${file}`,
+      installCommand: `curl -LO ${rawFileUrl(file)} && curl -LO ${rawShaUrl(file)} && shasum -a 256 -c ${file}.sha256 && tar -xzf ${file}`,
       verifyCommand: `shasum -a 256 -c ${file}.sha256`,
       notes: ["For Outside, use this machine to generate and send Signal bundles."],
     };
@@ -89,7 +109,7 @@ function recommendedFor(os: DetectedOS, role: Role): DownloadItem {
       description: "Optimized ARM64 build suitable for an always-on gateway.",
       file,
       sha256Url: shaUrl(file),
-      installCommand: `curl -LO ${fileUrl(file)} && curl -LO ${shaUrl(file)} && sha256sum -c ${file}.sha256 && tar -xzf ${file} && sudo ./install-linux.sh inside`,
+      installCommand: `curl -LO ${rawFileUrl(file)} && curl -LO ${rawShaUrl(file)} && sha256sum -c ${file}.sha256 && tar -xzf ${file} && sudo ./install-linux.sh inside`,
       verifyCommand: `sha256sum -c ${file}.sha256`,
       notes: ["Install service file included in the tarball.", "Use ethernet when possible for stability."],
     };
@@ -102,7 +122,7 @@ function recommendedFor(os: DetectedOS, role: Role): DownloadItem {
     description: "Static binary bundle with install script and service file.",
     file: linuxFile,
     sha256Url: shaUrl(linuxFile),
-    installCommand: `curl -LO ${fileUrl(linuxFile)} && curl -LO ${shaUrl(linuxFile)} && sha256sum -c ${linuxFile}.sha256 && tar -xzf ${linuxFile} && sudo ./install-linux.sh ${role}`,
+    installCommand: `curl -LO ${rawFileUrl(linuxFile)} && curl -LO ${rawShaUrl(linuxFile)} && sha256sum -c ${linuxFile}.sha256 && tar -xzf ${linuxFile} && sudo ./install-linux.sh ${role}`,
     verifyCommand: `sha256sum -c ${linuxFile}.sha256`,
     notes: ["For Inside, run on the censored side. For Outside, run on stable internet and send bundles."],
   };
@@ -179,7 +199,7 @@ export function DownloadSection() {
             description: "Tarball with install script + systemd unit.",
             file: `shadownet-inside-${version}-linux-amd64.tar.gz`,
             sha256Url: shaUrl(`shadownet-inside-${version}-linux-amd64.tar.gz`),
-            installCommand: `curl -LO ${fileUrl(`shadownet-inside-${version}-linux-amd64.tar.gz`)} && curl -LO ${shaUrl(
+            installCommand: `curl -LO ${rawFileUrl(`shadownet-inside-${version}-linux-amd64.tar.gz`)} && curl -LO ${rawShaUrl(
               `shadownet-inside-${version}-linux-amd64.tar.gz`,
             )} && sha256sum -c shadownet-inside-${version}-linux-amd64.tar.gz.sha256 && tar -xzf shadownet-inside-${version}-linux-amd64.tar.gz && sudo ./install-linux.sh inside`,
             verifyCommand: `sha256sum -c shadownet-inside-${version}-linux-amd64.tar.gz.sha256`,
@@ -191,7 +211,7 @@ export function DownloadSection() {
             description: "ARM64 tarball for servers and single-board devices.",
             file: `shadownet-inside-${version}-linux-arm64.tar.gz`,
             sha256Url: shaUrl(`shadownet-inside-${version}-linux-arm64.tar.gz`),
-            installCommand: `curl -LO ${fileUrl(`shadownet-inside-${version}-linux-arm64.tar.gz`)} && curl -LO ${shaUrl(
+            installCommand: `curl -LO ${rawFileUrl(`shadownet-inside-${version}-linux-arm64.tar.gz`)} && curl -LO ${rawShaUrl(
               `shadownet-inside-${version}-linux-arm64.tar.gz`,
             )} && sha256sum -c shadownet-inside-${version}-linux-arm64.tar.gz.sha256 && tar -xzf shadownet-inside-${version}-linux-arm64.tar.gz && sudo ./install-linux.sh inside`,
           },
@@ -231,9 +251,9 @@ export function DownloadSection() {
             description: "Ready now (CLI).",
             file: `shadownet-inside-${version}-android-arm64`,
             sha256Url: shaUrl(`shadownet-inside-${version}-android-arm64`),
-            installCommand: `pkg update -y && pkg install -y wget openssl-tool && wget -O shadownet-inside ${fileUrl(
+            installCommand: `pkg update -y && pkg install -y wget openssl-tool && wget -O shadownet-inside ${rawFileUrl(
               `shadownet-inside-${version}-android-arm64`,
-            )} && wget -O shadownet-inside.sha256 ${shaUrl(`shadownet-inside-${version}-android-arm64`)} && sha256sum -c shadownet-inside.sha256 && chmod +x shadownet-inside && ./shadownet-inside`,
+            )} && wget -O shadownet-inside.sha256 ${rawShaUrl(`shadownet-inside-${version}-android-arm64`)} && sha256sum -c shadownet-inside.sha256 && chmod +x shadownet-inside && ./shadownet-inside`,
           },
         ],
       },
@@ -247,7 +267,7 @@ export function DownloadSection() {
             description: "Use the Linux ARM64 Inside tarball.",
             file: `shadownet-inside-${version}-linux-arm64.tar.gz`,
             sha256Url: shaUrl(`shadownet-inside-${version}-linux-arm64.tar.gz`),
-            installCommand: `curl -LO ${fileUrl(`shadownet-inside-${version}-linux-arm64.tar.gz`)} && curl -LO ${shaUrl(
+            installCommand: `curl -LO ${rawFileUrl(`shadownet-inside-${version}-linux-arm64.tar.gz`)} && curl -LO ${rawShaUrl(
               `shadownet-inside-${version}-linux-arm64.tar.gz`,
             )} && sha256sum -c shadownet-inside-${version}-linux-arm64.tar.gz.sha256 && tar -xzf shadownet-inside-${version}-linux-arm64.tar.gz && sudo ./install-linux.sh inside`,
           },
@@ -263,7 +283,7 @@ export function DownloadSection() {
             description: "Zip bundle for Windows.",
             file: `shadownet-inside-${version}-windows-amd64.zip`,
             sha256Url: shaUrl(`shadownet-inside-${version}-windows-amd64.zip`),
-            installCommand: `curl -LO ${fileUrl(`shadownet-inside-${version}-windows-amd64.zip`)} && curl -LO ${shaUrl(
+            installCommand: `curl -LO ${rawFileUrl(`shadownet-inside-${version}-windows-amd64.zip`)} && curl -LO ${rawShaUrl(
               `shadownet-inside-${version}-windows-amd64.zip`,
             )}`,
             notes: ["Verify SHA256 using certutil and compare to the .sha256 file."],
@@ -274,7 +294,7 @@ export function DownloadSection() {
             description: "Zip bundle for Windows supporters.",
             file: `shadownet-outside-${version}-windows-amd64.zip`,
             sha256Url: shaUrl(`shadownet-outside-${version}-windows-amd64.zip`),
-            installCommand: `curl -LO ${fileUrl(`shadownet-outside-${version}-windows-amd64.zip`)} && curl -LO ${shaUrl(
+            installCommand: `curl -LO ${rawFileUrl(`shadownet-outside-${version}-windows-amd64.zip`)} && curl -LO ${rawShaUrl(
               `shadownet-outside-${version}-windows-amd64.zip`,
             )}`,
           },
@@ -290,7 +310,7 @@ export function DownloadSection() {
             description: "Apple Silicon tarball.",
             file: `shadownet-inside-${version}-darwin-arm64.tar.gz`,
             sha256Url: shaUrl(`shadownet-inside-${version}-darwin-arm64.tar.gz`),
-            installCommand: `curl -LO ${fileUrl(`shadownet-inside-${version}-darwin-arm64.tar.gz`)} && curl -LO ${shaUrl(
+            installCommand: `curl -LO ${rawFileUrl(`shadownet-inside-${version}-darwin-arm64.tar.gz`)} && curl -LO ${rawShaUrl(
               `shadownet-inside-${version}-darwin-arm64.tar.gz`,
             )} && shasum -a 256 -c shadownet-inside-${version}-darwin-arm64.tar.gz.sha256`,
           },
@@ -300,7 +320,7 @@ export function DownloadSection() {
             description: "Apple Silicon tarball.",
             file: `shadownet-outside-${version}-darwin-arm64.tar.gz`,
             sha256Url: shaUrl(`shadownet-outside-${version}-darwin-arm64.tar.gz`),
-            installCommand: `curl -LO ${fileUrl(`shadownet-outside-${version}-darwin-arm64.tar.gz`)} && curl -LO ${shaUrl(
+            installCommand: `curl -LO ${rawFileUrl(`shadownet-outside-${version}-darwin-arm64.tar.gz`)} && curl -LO ${rawShaUrl(
               `shadownet-outside-${version}-darwin-arm64.tar.gz`,
             )} && shasum -a 256 -c shadownet-outside-${version}-darwin-arm64.tar.gz.sha256`,
           },
@@ -353,6 +373,18 @@ export function DownloadSection() {
             <div className="mt-2 text-muted-foreground text-sm max-w-2xl">{recommended.description}</div>
             {recommended.file ? (
               <div className="mt-3 text-xs font-mono text-muted-foreground break-all">File: {recommended.file}</div>
+            ) : null}
+            {recommended.file ? (
+              <div className="mt-2 text-xs">
+                <a
+                  className="text-primary hover:opacity-90"
+                  href={githubBlobUrl(fileUrl(recommended.file))}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View on GitHub
+                </a>
+              </div>
             ) : null}
           </div>
 
@@ -459,6 +491,14 @@ export function DownloadSection() {
                           download
                         >
                           Download
+                        </a>
+                        <a
+                          href={githubBlobUrl(fileUrl(i.file))}
+                          className="bg-card hover:opacity-90 text-foreground px-4 py-2 rounded-md text-sm font-semibold transition-opacity border border-border"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          GitHub
                         </a>
                         {i.sha256Url ? (
                           <a
