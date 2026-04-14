@@ -26,3 +26,6 @@ ShadowNet is an offline-first censorship-circumvention agent built for high-risk
 - Threat model: [threat-model.md](threat-model.md)
 - LLM setup notes: [LLM_SETUP.md](LLM_SETUP.md)
 
+## Reports
+
+- Iran internet blackout: [iran-internet-blackout.md](iran-internet-blackout.md) (PDF: [iran-internet-blackout.pdf](iran-internet-blackout.pdf))
