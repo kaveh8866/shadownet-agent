@@ -2,3 +2,11 @@
 /inside.exe
 /outside.exe
 
+# Local env
+/.env.local
+/.env.*
+
+# Vercel CLI local config (may contain credentials)
+/.vercel/
+/.vercel-global/
+
