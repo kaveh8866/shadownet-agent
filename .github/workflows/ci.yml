@@ -129,4 +129,4 @@ jobs:
       - name: Run censorship matrix
         run: go test ./tests/simulation -run TestCensorshipSimulationScenarioMatrix_64Scenarios -count=1
       - name: Run latency and stability gates
-        run: go test ./tests/performance -run "TestDecisionLatencyP95_Under5s|TestRotationStability_1000Switches_NoPanic" -count=1
+        run: go test -tags perf ./tests/performance -run "TestDecisionLatencyP95_Under5s|TestRotationStability_1000Switches_NoPanic" -count=1

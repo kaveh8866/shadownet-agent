@@ -1,5 +1,5 @@
-//go:build linux
-// +build linux
+//go:build linux && perf
+// +build linux,perf
 
 package performance
 
