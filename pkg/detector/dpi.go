@@ -63,6 +63,9 @@ func CheckSNIReset(domain string, targetIP string) (bool, error) {
 func CheckSNIResetWith(ctx context.Context, dialer Dialer, domain string, targetAddr string) (bool, error) {
 	conn, err := dialer.DialContext(ctx, "tcp", targetAddr)
 	if err != nil {
+		if isConnResetLike(err) {
+			return true, nil
+		}
 		return false, fmt.Errorf("tcp connect failed: %w", err)
 	}
 	defer conn.Close()
